@@ -3,6 +3,7 @@ const userModel = require("../models/users");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const bycrpt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
 
 const JWT_SECRET = "iwarehouse@admin";
 //Create API user using POST "/api/auth". Doesn't require Login
@@ -41,9 +42,15 @@ router.post(
         email: req.body.email,
       });
 
-      res.status(200).json({
-        message: `Account created successfully for ${req.body.name}`,
-      });
+      //Create JWT token and send authToken to request.
+
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+      const authToken = jwt.sign(data, JWT_SECRET);
+      res.status(200).json({authToken});
     } catch (exception) {
       console.log(exception.message);
       res.status(500).send("Unusual error occured");
