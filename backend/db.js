@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const mongoURI = "mongodb://localhost:27017/?readPreference=primary&appname=iwarehouse&directConnection=true&ssl=false";
+const mongoURI = "mongodb://localhost:27017/iwarehouse?readPreference=primary&appname=iwarehouse&directConnection=true&ssl=false";
 
 const connectToMongo = async () => {
     try {
