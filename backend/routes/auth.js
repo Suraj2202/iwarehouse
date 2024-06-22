@@ -1,5 +1,6 @@
 const express = require("express");
 const userModel = require("../models/users");
+const fetchUserId = require("../middleware/fetchUserId");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const bycrpt = require("bcryptjs");
@@ -89,7 +90,7 @@ router.post(
           error: "Invalid Password Credentials !!!",
         });
       }
-      
+
       const data = {
         user: {
           id: user.id,
@@ -103,5 +104,25 @@ router.post(
     }
   }
 );
+
+//Get User details based on JWT token
+router.get("/getuser", fetchUserId, async (req, res) => {
+  //validation : 400 - Bad Request
+  const result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.status(400).json({ errors: result.array() });
+  }
+
+  try {
+    const userId = req.user.id;
+    console.log(req.user.id);
+    const user = await userModel.findById(userId).select("-password");
+
+    res.send(user);
+  } catch (exception) {
+    console.log(exception.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 module.exports = router;
