@@ -6,10 +6,10 @@ const bycrpt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 
 const JWT_SECRET = "iwarehouse@admin";
-//Create API user using POST "/api/auth". Doesn't require Login
 
+//Create API user using POST "/api/auth". Doesn't require Login
 router.post(
-  "/",
+  "/createuser",
   [
     body("name", "Enter a valid name").isLength({ min: 3 }),
     body("password", "Password must be atleast 5 character").isLength({
@@ -50,10 +50,56 @@ router.post(
         },
       };
       const authToken = jwt.sign(data, JWT_SECRET);
-      res.status(200).json({authToken});
+      res.status(200).json({ authToken });
     } catch (exception) {
       console.log(exception.message);
-      res.status(500).send("Unusual error occured");
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
+//Authenticate a user using POST "/api/auth/login". To perform login & other operations.
+router.post(
+  "/login",
+  [
+    body("password", "Password cannot be blank").exists(),
+    body("email", "Enter a valid email").isEmail(),
+  ],
+  async (req, res) => {
+    //validation : 400 - Bad Request
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).json({ errors: result.array() });
+    }
+
+    try {
+      const { email, password } = req.body;
+
+      //Check user exists
+      let user = await userModel.findOne({ email });
+      if (!user) {
+        return res.status(400).json({
+          error: "Invalid Email Credentials !!!",
+        });
+      }
+
+      const comparePassword = await bycrpt.compare(password, user.password);
+      if (!comparePassword) {
+        return res.status(400).json({
+          error: "Invalid Password Credentials !!!",
+        });
+      }
+      
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+      const authToken = jwt.sign(data, JWT_SECRET);
+      res.status(200).json({ authToken });
+    } catch (exception) {
+      console.log(exception.message);
+      res.status(500).send("Internal Server Error");
     }
   }
 );
