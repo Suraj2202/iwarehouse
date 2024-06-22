@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
 const ProductSchema = new Schema({
-    id:{
-        type: String,
-        required: true,
-        unique: true
+    user:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user'
     },
-    name:{
+    title:{
         type: String,
         required: true
     },
@@ -18,14 +18,11 @@ const ProductSchema = new Schema({
         type: Number,
         required: true
     },
-    image:{
-        type: String
-    },
-    buyCount:{
+    buycount:{
         type: Number,
         required: true
     },
-    offerCount:{
+    offercount:{
         type: Number,
         required: true
     },

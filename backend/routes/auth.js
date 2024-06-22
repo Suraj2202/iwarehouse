@@ -8,9 +8,8 @@ var jwt = require("jsonwebtoken");
 
 const JWT_SECRET = "iwarehouse@admin";
 
-//Create API user using POST "/api/auth". Doesn't require Login
-router.post(
-  "/createuser",
+//API 1 : "/api/auth/createuser" - Create API user using POST "/api/auth/createuser". Doesn't require Login
+router.post("/createuser",
   [
     body("name", "Enter a valid name").isLength({ min: 3 }),
     body("password", "Password must be atleast 5 character").isLength({
@@ -59,9 +58,8 @@ router.post(
   }
 );
 
-//Authenticate a user using POST "/api/auth/login". To perform login & other operations.
-router.post(
-  "/login",
+//API 2 : "/api/auth/login" - Authenticate a user using POST "/api/auth/login". To perform login & other operations.
+router.post("/login",
   [
     body("password", "Password cannot be blank").exists(),
     body("email", "Enter a valid email").isEmail(),
@@ -105,8 +103,10 @@ router.post(
   }
 );
 
-//Get User details based on JWT token
-router.get("/getuser", fetchUserId, async (req, res) => {
+//API 3: "/api/auth/getuser" - Get User details based on JWT token
+router.get("/getuser", 
+  fetchUserId, 
+  async (req, res) => {
   //validation : 400 - Bad Request
   const result = validationResult(req);
   if (!result.isEmpty()) {
