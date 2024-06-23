@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext} from "react";
 import "../App.css"; // Ensure App.css is needed elsewhere
+import productContext from "../context/product/productContext";
 
 const ProductItem = (props) => {
 
-  const product = props.product;
+  const context = useContext(productContext);
+  const { deleteProduct } = context;
+
+  const {product, updateProduct} = props;
 
   return (
     <div className="col-md-3">
@@ -12,8 +16,8 @@ const ProductItem = (props) => {
           <h5 className="card-title">{product.title}</h5>
           <p className="card-text">{product.description}</p>
           <div className="container d-flex justify-content-end">
-            <i className="fa-solid fa-trash-can mx-4 my-2"></i>
-            <i className="fa-solid fa-pen-to-square mx-2 my-2"></i>
+            <i className="fa-solid fa-trash-can mx-4 my-2" onClick={()=>{deleteProduct(product._id)}}></i>
+            <i className="fa-solid fa-pen-to-square mx-2 my-2" onClick={()=>{updateProduct(product)}}></i>
           </div>
 
           <hr className="my-2" />

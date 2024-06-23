@@ -2,82 +2,116 @@ import React, { useState } from "react";
 import productContext from "./productContext";
 
 const ProductState = (props) => {
-  const productsInitial = [
-        {
-          "_id": "667726a635f2ba6bf0cbaa81",
-          "user": "6676f7dc9936c9815dc3c216",
-          "title": "Product2 updated",
-          "description": "ProductDesc2 updated",
-          "price": 500,
-          "buycount": 50,
-          "offercount": 10,
-          "date": "2024-06-22T19:31:50.963Z",
-          "__v": 0
-        },
-        {
-          "_id": "667726a835f2ba6bf0cbaa83",
-          "user": "6676f7dc9936c9815dc3c216",
-          "title": "Product2",
-          "description": "ProductDesc2",
-          "price": 200,
-          "buycount": 10,
-          "offercount": 2,
-          "date": "2024-06-22T19:31:52.834Z",
-          "__v": 0
-        },
-        {
-          "_id": "667726a935f2ba6bf0cbaa85",
-          "user": "6676f7dc9936c9815dc3c216",
-          "title": "Product2",
-          "description": "ProductDesc2",
-          "price": 200,
-          "buycount": 10,
-          "offercount": 2,
-          "date": "2024-06-22T19:31:53.515Z",
-          "__v": 0
-        },
-        {
-          "_id": "667726a935f2ba6bf0cbaa87",
-          "user": "6676f7dc9936c9815dc3c216",
-          "title": "Product2",
-          "description": "ProductDesc2",
-          "price": 200,
-          "buycount": 10,
-          "offercount": 2,
-          "date": "2024-06-22T19:31:53.771Z",
-          "__v": 0
-        }
-  ];
-
+  const host = "http://localhost:5000";
+  const productsInitial = [];
   const [products, setProducts] = useState(productsInitial);
 
+  //Get all Product
+  const getAllProducts = async () => {
+    const response = await fetch(`${host}/api/product/fetchallproducts`, {
+      method: "GET",
+      headers: {
+        "auth-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3NmY3ZGM5OTM2Yzk4MTVkYzNjMjE2In0sImlhdCI6MTcxOTA4Njc0OH0.KwRb8dsn8Rjc3lehc48ykyI8epW_7kYoKGFnxC5BcTs",
+      },
+    });
+
+    const json = await response.json();
+    setProducts(json);
+  };
+
   //Add Product
-  const addProduct = (title, description, price, buycount, offercount) =>{
-    const product = {
-      "_id": "66772d83353b3c6cc648a271",
-      "user": "6676f7dc9936c9815dc3c216",
-      "title": title,
-      "description": description,
-      "price": price,
-      "buycount": buycount,
-      "offercount": offercount,
-      "date": "2024-06-22T20:01:10.743Z",
-      "__v": 0
+  const addProduct = async (
+    title,
+    description,
+    price,
+    buycount,
+    offercount
+  ) => {
+    const response = await fetch(`${host}/api/product/addproduct`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3NmY3ZGM5OTM2Yzk4MTVkYzNjMjE2In0sImlhdCI6MTcxOTA4Njc0OH0.KwRb8dsn8Rjc3lehc48ykyI8epW_7kYoKGFnxC5BcTs",
+      },
+      body: JSON.stringify({ title, description, price, buycount, offercount }),
+    });
+
+    const product = await response.json();
+    console.log(product)
+    setProducts(products.concat(product));
+  };
+
+  //Edit Product
+  const editProduct = async (
+    id,
+    title,
+    description,
+    price,
+    buycount,
+    offercount
+  ) => {
+    //ToDO: API call
+
+    const response = await fetch(`${host}/api/product/updateproduct/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3NmY3ZGM5OTM2Yzk4MTVkYzNjMjE2In0sImlhdCI6MTcxOTA4Njc0OH0.KwRb8dsn8Rjc3lehc48ykyI8epW_7kYoKGFnxC5BcTs",
+      },
+      body: JSON.stringify({ title, description, price, buycount, offercount }),
+    });
+    const json = await response.json();
+
+    let newProduct = JSON.parse(JSON.stringify(products));
+
+    //Logic to edit
+    for (let index = 0; index < newProduct.length; index++) {
+      if (newProduct[index]._id === id) {
+        newProduct[index].title = title;
+        newProduct[index].description = description;
+        newProduct[index].price = price;
+        newProduct[index].buycount = buycount;
+        newProduct[index].offercount = offercount;
+
+        break;
+      }
     }
 
-    setProducts(products.concat(product));
-  }
-  //Edit Product
-  const editProduct = () =>{
+    setProducts(newProduct);
 
-  }
+  };
 
   //Delete Product
-  const deleteProduct = () =>{
+  const deleteProduct = async (id) => {
+    // ToDo: API Call
+    const response = await fetch(`${host}/api/product/deleteproduct/${id}`, {
+      method: "DELETE",
+      headers: {
+        "auth-token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjY3NmY3ZGM5OTM2Yzk4MTVkYzNjMjE2In0sImlhdCI6MTcxOTA4Njc0OH0.KwRb8dsn8Rjc3lehc48ykyI8epW_7kYoKGFnxC5BcTs",
+      }
+    });
 
-  }
+    const json = await response.json()
+    
+    const remainingProduct = products.filter((product) => {
+      return product._id !== id;
+    });
+    setProducts(remainingProduct);
+  };
   return (
-    <productContext.Provider value={{ products, addProduct, editProduct, deleteProduct }}>
+    <productContext.Provider
+      value={{
+        products,
+        addProduct,
+        editProduct,
+        deleteProduct,
+        getAllProducts,
+      }}
+    >
       {props.children}
     </productContext.Provider>
   );
