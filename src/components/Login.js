@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [credential, setCredential] = useState({email : "", password : ""});
+  const navigate = useNavigate();
 
   const onChange = (e) => {
     setCredential({ ...credential, [e.target.name]: e.target.value });
@@ -21,6 +23,16 @@ const Login = () => {
 
     const cred = await response.json();
     console.log(cred);
+
+    if(cred.authToken)
+      {
+        localStorage.setItem('token', cred.authToken);
+        navigate("/");
+      }
+      else
+      {
+        alert("else")
+      }
   };
 
   return (
