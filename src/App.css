@@ -27,26 +27,22 @@
 .App-link {
   color: #61dafb;
 }
+
 .card {
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-}
-
-.card-img-top {
-  border-bottom: 1px solid #ddd;
 }
 
 .card-body {
   padding: 1rem;
-  display: flex;
-  flex-direction: column;
 }
 
 .card-title {
   font-size: 1.25rem;
   font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 .card-text {
@@ -54,12 +50,20 @@
   margin-bottom: 0.5rem;
 }
 
-.card-subtitle {
-  font-size: 0.875rem;
+.card-info {
+  margin-top: 1rem;
+}
+
+.card-info .row {
+  margin-bottom: 0.5rem;
+}
+
+.hr {
+  margin: 0.5rem 0;
 }
 
 @media (max-width: 768px) {
-  .col-md-3 {
+  .card {
     width: 100%;
     margin-bottom: 1rem;
   }

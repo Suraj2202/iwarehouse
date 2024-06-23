@@ -1,30 +1,34 @@
 import React from "react";
-import "../App.css";
+import "../App.css"; // Ensure App.css is needed elsewhere
 
-const ProductItem = ({ product }) => {
+const ProductItem = (props) => {
+
+  const product = props.product;
+
   return (
     <div className="col-md-3">
       <div className="card my-3">
-        <img
-          src="https://cdn.worldvectorlogo.com/logos/50x50.svg"
-          className="card-img-top mx-auto mt-3"
-          alt={product.title}
-          style={{ width: "100px", height: "100px" }}
-        />
-        <div className="card-body d-flex flex-column">
+        <div className="card-body">
           <h5 className="card-title">{product.title}</h5>
           <p className="card-text">{product.description}</p>
-          <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex">
-              <p className="card-text me-3 text-muted">
-                Price: ₹{product.price}
-              </p>
-              <p className="card-text me-3 text-muted">
-                Buy Count: {product.buycount}
-              </p>
-              <p className="card-text mb-0 text-muted">
-                Offer Count: {product.offercount}
-              </p>
+          <div className="container d-flex justify-content-end">
+            <i className="fa-solid fa-trash-can mx-4 my-2"></i>
+            <i className="fa-solid fa-pen-to-square mx-2 my-2"></i>
+          </div>
+
+          <hr className="my-2" />
+          <div className="card-info">
+            <div className="row">
+              <div className="col-4">
+                <p className="card-text text-muted">Price:</p>
+                <p className="card-text text-muted">Buy:</p>
+                <p className="card-text text-muted">Offer:</p>
+              </div>
+              <div className="col-8">
+                <p className="card-text">₹{product.price}</p>
+                <p className="card-text">{product.buycount}</p>
+                <p className="card-text">{product.offercount}</p>
+              </div>
             </div>
           </div>
         </div>
