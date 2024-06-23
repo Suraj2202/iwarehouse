@@ -36,8 +36,8 @@ function Navbar() {
             </li>
           </ul>
           <form className="d-flex" role="search">
-          <Link className="btn btn-primary mx-2" role="button">Login</Link>
-          <Link className="btn btn-primary mx-2" role="button">Sign Up</Link>
+          <Link className="btn btn-primary" to="/login" role="button">Login</Link>
+          <Link className="btn btn-primary mx-2" to="/signup" role="button">Sign Up</Link>
           </form>
         </div>
       </div>
