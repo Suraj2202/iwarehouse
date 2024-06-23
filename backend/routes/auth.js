@@ -21,7 +21,7 @@ router.post("/createuser",
     //validation : 400 - Bad Request
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.status(400).json({success: false, errors: result.array() });
+      return res.status(400).json({ errors: result.array() });
     }
 
     //Check user exists
@@ -29,7 +29,6 @@ router.post("/createuser",
       let user = await userModel.findOne({ email: req.body.email });
       if (user) {
         return res.status(400).json({
-          success: false,
           error: "Email already occupied. Please enter unique email id.",
         });
       }
@@ -51,10 +50,10 @@ router.post("/createuser",
         },
       };
       const authToken = jwt.sign(data, JWT_SECRET);
-      res.status(200).json({success: true, authToken : authToken });
+      res.status(200).json({ authToken });
     } catch (exception) {
       console.log(exception.message);
-      res.status(500).json({success : false, errormessage : "Internal Server Error"});
+      res.status(500).send("Internal Server Error");
     }
   }
 );
@@ -69,7 +68,7 @@ router.post("/login",
     //validation : 400 - Bad Request
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.status(400).json({success: false, errors: result.array() });
+      return res.status(400).json({ errors: result.array() });
     }
 
     try {
@@ -79,7 +78,6 @@ router.post("/login",
       let user = await userModel.findOne({ email });
       if (!user) {
         return res.status(400).json({
-          success: false,
           error: "Invalid Email Credentials !!!",
         });
       }
@@ -87,7 +85,6 @@ router.post("/login",
       const comparePassword = await bycrpt.compare(password, user.password);
       if (!comparePassword) {
         return res.status(400).json({
-          success: false,
           error: "Invalid Password Credentials !!!",
         });
       }
@@ -98,10 +95,10 @@ router.post("/login",
         },
       };
       const authToken = jwt.sign(data, JWT_SECRET);
-      res.status(200).json({success: true, authToken : authToken });
+      res.status(200).json({ authToken });
     } catch (exception) {
       console.log(exception.message);
-      res.status(500).send({success: false, errormessage : "Internal Server Error"});
+      res.status(500).send("Internal Server Error");
     }
   }
 );
@@ -113,7 +110,7 @@ router.get("/getuser",
   //validation : 400 - Bad Request
   const result = validationResult(req);
   if (!result.isEmpty()) {
-    return res.status(400).json({success: false, errors: result.array() });
+    return res.status(400).json({ errors: result.array() });
   }
 
   try {
@@ -121,10 +118,10 @@ router.get("/getuser",
     console.log(req.user.id);
     const user = await userModel.findById(userId).select("-password");
 
-    res.status(200).json({success: true, user : user});
+    res.send(user);
   } catch (exception) {
     console.log(exception.message);
-    res.status(500).json({success: false, errormessage : "Internal Server Error"});
+    res.status(500).send("Internal Server Error");
   }
 });
 

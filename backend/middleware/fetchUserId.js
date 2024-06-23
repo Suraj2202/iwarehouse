@@ -8,7 +8,7 @@ const fetchUserId = (req, res, next) => {
   //when no token in header
   const token = req.header("auth-token");
   if (!token) {
-    res.status(401).json({success: false, errormessage : "Please login again, token unavailable."});
+    res.status(401).send("Please login again, token unavailable.");
   }
 
   try {
@@ -17,7 +17,7 @@ const fetchUserId = (req, res, next) => {
     next();
   } catch (ex) {
     console.log(ex.message);
-    res.status(500).json({success: false, errormessage : "Please login again, token expire."});
+    res.status(500).send("Please login again, token expire.");
   }
 };
 

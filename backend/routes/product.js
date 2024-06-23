@@ -8,10 +8,10 @@ const { body, validationResult } = require("express-validator");
 router.get("/fetchallproducts", fetchUserId, async (req, res) => {
   try {
     const products = await productModel.find({ user: req.user.id });
-    res.json({success: true, products : products});
+    res.json(products);
   } catch (ex) {
     console.log(ex.message);
-    res.status(500).json({success: false, errormessage :"Internal Server Error"});
+    res.status(500).send("Internal Server Error");
   }
 });
 
@@ -32,7 +32,7 @@ router.post(
     //validation : 400 - Bad Request
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.status(400).json({success: false, errors: result.array() });
+      return res.status(400).json({ errors: result.array() });
     }
 
     try {
@@ -49,10 +49,10 @@ router.post(
       });
       const saveProduct = await product.save();
 
-      res.status(200).json({success: true, product : saveProduct});
+      res.status(200).json(saveProduct);
     } catch (exception) {
       console.log(exception.message);
-      res.status(500).json({ success: false, errormessage : "Internal Server Error"});
+      res.status(500).send("Internal Server Error");
     }
   }
 );
@@ -74,7 +74,7 @@ router.put(
     //validation : 400 - Bad Request
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.status(400).json({ success: false ,errors: result.array() });
+      return res.status(400).json({ errors: result.array() });
     }
 
     try {
@@ -102,11 +102,11 @@ router.put(
       let product = await productModel.findById(req.params.id);
 
       if (!product) {
-        return res.status(404).json({success: false, errormessage : "Not Found"});
+        return res.status(404).send("Not Found");
       }
 
       if (product.user.toString() !== req.user.id) {
-        return res.status(401).json({ success: false, errormessage : "Unauthorized access, not allowed."});
+        return res.status(401).send("Unauthorized access, not allowed.");
       }
       console.log(req.params.id);
       product = await productModel.findByIdAndUpdate(
@@ -114,10 +114,10 @@ router.put(
         { $set: newProduct },
         { new: true }
       );
-      res.status(200).json({success: true, product : product });
+      res.json({ product });
     } catch (exception) {
       console.log(exception.message);
-      res.status(500).json({ success: false,errormessage : "Internal Server Error"});
+      res.status(500).send("Internal Server Error");
     }
   }
 );
@@ -127,7 +127,7 @@ router.delete("/deleteproduct/:id", fetchUserId, async (req, res) => {
   //validation : 400 - Bad Request
   const result = validationResult(req);
   if (!result.isEmpty()) {
-    return res.status(400).json({success: false, errors: result.array() });
+    return res.status(400).json({ errors: result.array() });
   }
 
   try {
@@ -135,21 +135,21 @@ router.delete("/deleteproduct/:id", fetchUserId, async (req, res) => {
     let product = await productModel.findById(req.params.id);
 
     if (!product) {
-      return res.status(404).json({ success: false, errormessage : "Not Found"});
+      return res.status(404).send("Not Found");
     }
 
     if (product.user.toString() !== req.user.id) {
-      return res.status(401).json({success: false, errormessage : "Unauthorized access, not allowed."});
+      return res.status(401).send("Unauthorized access, not allowed.");
     }
     console.log(req.params.id);
     product = await productModel.findByIdAndDelete(req.params.id);
     res.json({
         title: product.title,
-        Success: true 
+        "Success": "Product Deleted successfully."
     });
   } catch (exception) {
     console.log(exception.message);
-    res.status(500).json({success: false, errormessage : "Internal Server Error"});
+    res.status(500).send("Internal Server Error");
   }
 });
 
